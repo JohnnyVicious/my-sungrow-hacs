@@ -1,0 +1,54 @@
+{% raw %}
+# modbus_sungrow.yaml
+# This file contains the configuration for the Modbus communication with the Sungrow inverter.
+# It defines the mapping of Modbus registers to sensor states.
+
+modbus:
+  - name: Sungrow system state
+    unique_id: sg_system_state
+    availability: "{{ not is_state('sensor.system_state', 'unavailable') }}"
+    device_class: enum
+    state: >-
+      {% if ((states('sensor.system_state') |int) == 0x4000) %}
+        External EMS mode
+      {% elif ((states('sensor.system_state') |int) in [0x55000,0x0100]) %}
+        Fault
+      {% elif ((states('sensor.system_state') |int) in [0x8000,0x0001]) %}
+        Stop
+      {% elif ((states('sensor.system_state') |int) in [0x8100,0x0080]) %}
+        De-rating Running
+      {% elif ((states('sensor.system_state') |int) == 0x8200) %}
+        Dispatch Run
+      {% elif ((states('sensor.system_state') |int) == 0x9100) %}
+        Warn Running
+      {% else %}
+        Unknown - should not see me! {{ (states('sensor.system_state') |int) }}
+      {% endif %}
+
+  - name: Sungrow device type
+    unique_id: sg_device_type
+    availability: "{{ not is_state('sensor.sungrow_device_type_code', 'unavailable') }}"
+    device_class: enum
+    state: >-
+      {% if ((states('sensor.sungrow_device_type_code') |int)  == 0x0D06) %}
+        SH3K6
+      {% elif ((states('sensor.sungrow_device_type_code') |int) == 0x0D07) %}
+        SH4K6
+      {% elif ((states('sensor.sungrow_device_type_code') |int) == 0x0D09) %}
+        SH5K-20  
+      {% elif ((states('sensor.sungrow_device_type_code') |int) == 0x0D03) %}
+        SH5K-V13
+      {% elif ((states('sensor.sungrow_device_type_code') |int) == 0x0D0A) %}
+        SH3K6-30
+      {% elif ((states('sensor.sungrow_device_type_code') |int) == 0x0D0B) %}
+        SH4K6-30
+      {% elif ((states('sensor.sungrow_device_type_code') |int) == 0x0D0C) %}
+        SH5K-30
+      {% elif ((states('sensor.sungrow_device_type_code') |int) == 0x0D17) %}
+        SH3.RS
+      {% elif ((states('sensor.sungrow_device_type_code') |int) == 0x0D0D) %}
+        Unknown Device
+      {% else %}
+        Unknown - should not see me! {{ (states('sensor.sungrow_device_type_code') |int) }}
+      {% endif %}
+{% endraw %}

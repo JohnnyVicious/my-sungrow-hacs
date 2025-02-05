@@ -1,0 +1,11 @@
+{
+  "domain": "sungrow",
+  "name": "Sungrow Solar Inverter",
+  "version": "1.0.0",
+  "documentation": "https://github.com/yourusername/my-sungrow-hacs#readme",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@yourusername"],
+  "iot_class": "local_polling",
+  "integration_type": "hub"
+}
